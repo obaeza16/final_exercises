@@ -1,0 +1,117 @@
+1. Complete the Git exercise 1 (see hands-on).
+
+DONE: https://github.com/obaeza16
+
+2.Complete the Docker exercise 1 (see hands-on).
+Make a Git repository containing the Docker file that you used to build your image and
+​push it to GitHub. Add the URL that points to your image in DockerHub in the 
+‘description’ of the Dockerfile.
+
+DONE : https://hub.docker.com/u/obaeza16
+
+3. Describe the workflow of a ChIP-seq experiment (experimental part)
+
+	1: Use formaldehyde to glue ALL proteins bound to the DNA at a certain 
+	   time point with the DNA chain
+	2: Digest DNA into small fragments, like 300bp, fragments
+	3: We capture the DNA bound protein we are interested in with an antibody
+	   directed to this one attached with a bead
+	4: We capture the primary antibody with a second antibody capturin this one
+	   and we wash away all the remaining proteins and DNA
+	5: The formaldehide gluing is reversed by warming and we wash away all the
+	   proteins, including the histones
+	6: The DNA fragments are sequenced, and the reads will be later processed 
+
+4. Why do we need a control in ChIP-seq experiments?
+
+
+
+5.Explain at which stage of a ChIP-seq processing analysis and how we combine 
+the information of ChIP and control reads. Describe the output files we get if
+we are using the tool MACS2.
+
+We combine this information at the peak-calling step. In this step we compare
+the peaks in the Chip files vs the control files, and we get the positions in which 
+the histone maks or the TF are bound in the genome.
+	
+The output files are wiggle and BED files. These are the human readable 
+versions, and the binary compressed files are called BigWig and BigBed. The wiggle
+files store continuous data about the position and its signal associated, resulting
+from the comparison between experiment vs control. The Bed file contains genomic
+positions, with chr, start and end as obligatory data and other data can be also 
+introduced in it. Used to represent genomic segments, either of gene coordinates or 
+the genomic location of any signal (Chip experiment) 
+
+6. What is a pipeline? In the case of the ENCODE ChIP-seq pipeline, which steps of 
+the analysis of ChIP-seq data does it contain?
+
+A pipeline is an agregation of steps to do a definde process. In this case, to 
+obtain the bigBed and bigWig files from our samples. It contains the following steps:
+Sequencing - as a result, we get FASTQ files
+Mapping - resulting in BAM files
+Peak calling - agregating the contorl and the Chip experiment, resulting in bigBed
+and bigWig files. 
+
+7.For the same EN-TEx donor that we have used in the hands-on session in class, use
+the Experiment Search Toolbar from the ENCODE portal to find all released experiments 
+testing chromatin accessibility in stomach and sigmoid_colon (assembly GRCh38).
+Paste here the filters you have applied. How many experiments are there? Paste here 
+the link to download the corresponding metadata file.
+
+Filters:
+DNA accesibility
+Released
+GRCh38
+Sigmoid colon & Stomach
+
+There are only 4 experiments with this caracteristics. 
+Link: https://www.encodeproject.org/metadata/?type=Experiment&replicates.library.biosample.donor.uuid=d370683e-81e7-473f-8475-7716d027849b&status=released&status=submitted&status=in+progress&assay_slims=DNA+accessibility&assembly=GRCh38&biosample_ontology.term_name=sigmoid+colon&biosample_ontology.term_name=stomach
+
+8. Download the metadata retrieved in point 5. Parse it to get:
+File ID of bigWig file for fold-change over control in sigmoid_colon ATAC-seq experiment
+File ID of bigWig file for fold-change over control in stomach ATAC-seq experiment
+Paste the code used and the corresponding IDs.
+
+
+
+9. What is an aggregation plot? Which tool do we use to generate one? Which input data 
+do we need? Have a look at the aggregation plot done during the hands-on. Are the plots consistent
+between the two tissues? Is this what you would expect, given the relationship between H3K4me3 
+and gene expression? Why is it important to know the approximate location of a specific histone 
+mark with respect to the gene?
+
+An aggregation plot is useful to represent continuous data, in this case the Chip signal versus
+the genolmic coordinates. We will use an R wrapper that will produce the plot with our
+input data. As input we will need the bigWig files and a gencode annotation with the genomic
+coordinates. Yes, both aggregation plots are very similar in both tissues, as expected. The
+shape of the signal is the expected one at the 1000 most expressed genes, with a peak before 
+the TSS and a bigger peak 100-250 bp after it. In comparison, in the 1000 least expressed genes
+we can observe the same shape but with much more reduced signal values. The FC in the peak 
+of the first genes is over 30, whereas the one of the least is over 5. As we know, this histone
+mark is closely related with gene expression, so as expected the more expressed the gene are,
+more histone mark signal is detected and the FC grows. It is important because if we know the 
+approximate location, we can asses its function and we will be able to plot it and make comparisons
+that would be impossible if we dont know where the marks are located in relation to the gene.
+
+10. What type of plot are we using to visualize the correlation between two variables?
+Have a look at the plots generated during the hands-on to assess the correlation
+between expression and H3K4me3
+Are these results consistent between the two tissues?
+Would you expect this degree of correlation? Formulate an interpretation of the results
+
+We will use a scatterplot with expression on the x axis and H3K4me3 FC in the y axis. Yes, 
+they are consistent in both tissues having the same relation between the gene expression 
+and H3K4me3 signal. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+11.During the hands-on session, we have checked the level of expression of genes with 
+tissue-specific H3K4me3 marking.
+Are these results consistent with the degree of correlation we have observed in point8?
+Do you observe any unexpected behavior?
+How would you relate the presence of genes with tissue-specific marking with the GO
+terms obtained?
+
+12. Have a look at the Venn diagram generated in the last task.
+Comment on the number of peaks shared: is there more sharing between peaks of different
+type in the same tissue (e.g.H3K4me3 & POLR2A of stomach), or between peaks of the same
+type in different tissues (e.g.H3K4me3 of stomach and sigmoid colon)?
+
