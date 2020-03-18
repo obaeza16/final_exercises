@@ -24,7 +24,11 @@ DONE : https://hub.docker.com/u/obaeza16
 
 4. Why do we need a control in ChIP-seq experiments?
 
-
+We need the control samples due mainly to two reasons:
+	DNA brakage is not uniform, and this may lead to false-positives in 
+	open-chromatin regions. 
+	Also, platform specific sequencing can increase the nonuniformity of the sample.
+These control samples are utilized in the step of peak calling. 
 
 5.Explain at which stage of a ChIP-seq processing analysis and how we combine 
 the information of ChIP and control reads. Describe the output files we get if
@@ -72,6 +76,17 @@ File ID of bigWig file for fold-change over control in sigmoid_colon ATAC-seq ex
 File ID of bigWig file for fold-change over control in stomach ATAC-seq experiment
 Paste the code used and the corresponding IDs.
 
+grep -F ATAC-seq metadata.tsv | grep -F "fold change" | grep -F "sigmoid colon" |\
+awk 'BEGIN{FS=OFS="\t"; print "file_id\ttissue\ttarget\tsample" } $2=="bigWig" {print $1, $7, $19,"IP"}' > bigWig.colon.ids.txt
+
+grep -F ATAC-seq metadata.tsv | grep -F "fold change" | grep -F "stomach" |\
+awk 'BEGIN{FS=OFS="\t"; print "file_id\ttissue\ttarget\tsample" } $2=="bigWig" {print $1, $7, $19,"IP"}' > bigWig.stomach.ids.txt
+
+file_id tissue  target  sample
+ENCFF997HHO     sigmoid colon           IP
+
+file_id tissue  target  sample
+ENCFF415RKU     stomach         IP
 
 
 9. What is an aggregation plot? Which tool do we use to generate one? Which input data 
@@ -101,7 +116,11 @@ Would you expect this degree of correlation? Formulate an interpretation of the 
 
 We will use a scatterplot with expression on the x axis and H3K4me3 FC in the y axis. Yes, 
 they are consistent in both tissues having the same relation between the gene expression 
-and H3K4me3 signal. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+and H3K4me3 signal. Actually we expected more correlation between both variables. This difference
+is due to the differences in range of the expression, going from -x to +x and the range of the 
+histone modifications, going from 0 to 4. This smaller range is due to the DNA configuration, having
+two copies of the gene and having two histones per gene, with two marking locations in this process.
+This difference prevents the correlation to be as accurate as we could expect.  
 
 11.During the hands-on session, we have checked the level of expression of genes with 
 tissue-specific H3K4me3 marking.
@@ -110,8 +129,19 @@ Do you observe any unexpected behavior?
 How would you relate the presence of genes with tissue-specific marking with the GO
 terms obtained?
 
+Yes, they are consistent with what we have found so far. The only strange behaviour is 
+having so many inmunology genes expressed as higly as thay are in stomach. In stomach we
+find many enriched genes in relation with immunology, as well as normal functions of the 
+digestive system. In comparison, we lack these enriched genes in the sigmoid colon. In the 
+latter tissue we have the GO enriched terms for the digestive and assimilation of nutrients 
+GO terms.  
+
 12. Have a look at the Venn diagram generated in the last task.
 Comment on the number of peaks shared: is there more sharing between peaks of different
 type in the same tissue (e.g.H3K4me3 & POLR2A of stomach), or between peaks of the same
 type in different tissues (e.g.H3K4me3 of stomach and sigmoid colon)?
 
+We have many more sharing of peaks from H3K4me3 shared between tissues than not, and we 
+also share between tissues the peaks of POLR2A. The point with more intersection is the 
+union of the four separation, sharing between stomach,sigmoid colon of H3K4me3 and both
+tissues in POLR2A.
